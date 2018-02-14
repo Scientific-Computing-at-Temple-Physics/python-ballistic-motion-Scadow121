@@ -1,4 +1,5 @@
 import math as ma
+import numpy as np
 import matplotlib.pyplot as plt
 
 g=raw_input('G Constant: ')     #This will be changed to a negative value regardless of sign here...
@@ -21,37 +22,39 @@ v0a=ma.radians(v0a)
 
 v0x=v0m*ma.cos(v0a)
 v0y=v0m*ma.sin(v0a)
-
-t=[0.]
-px=[0.]
-py=[h0]
-vx=[v0x]
-vy=[v0y]
+vy=v0y
 
 c=1
-t.append(ts*c)
-px.append(v0x*t[c])
-py.append(h0+(v0y*t[c])+(0.5*g*(t[c]**2)))
-vx.append(v0x)
-vy.append(v0y+(g*t[c]))
-
-#print py
-
-while py [c] >= 0:
-    t.append((c+1)*ts)
-    px.append(v0x*t[c+1])
-    py.append(h0+(v0y*t[c+1])+(0.5*g*(t[c+1]**2)))
-    vx.append(v0x)
-    vy.append(v0y+(g*t[c+1]))
+l=[1]
+tmp=h0
+while tmp >= 0:
+    tmp=h0+(v0y*c*ts)+(0.5*g*((c*ts)**2))
     c=c+1
+    l.append(c)
 
-f=len(t)
-#print t
+t=np.zeros([1,c])
+pxy=np.zeros([2,c])
+
+for x in l:
+    t.itemset((x-1),(x-1)*ts)
+    pxy.itemset((0,x-1),v0x*t.item(x-1))
+    pxy.itemset((1,x-1),(h0+(v0y*t.item(x-1))+(0.5*g*(t.item(x-1)**2))))
+
+px=pxy[0,]
+py=pxy[1,]
+hi=np.amax(py)
+
+c=0
+a=None
+while a != hi:
+    a=py[c]
+    c=c+1
+hix=px[c-1]
+
 print ''
-print 'Total Flight Time:', t [f-1], 'Seconds'
+print 'Total Flight Time:', np.amax(t), 'Seconds'
 print ''
-hi=py.index(max(py))
-print 'Highest Point: (', px [hi], ',', max(py), ')'
+print 'Highest Point: (', hix, ',', hi, ')'
 print ''
 print 'Distance to Ground Every',ts, 'Seconds:'
 print py
